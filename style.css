@@ -1,0 +1,538 @@
+/* Global Styles */
+:root {
+  --bg-color: #0b0f19;
+  --panel-bg: rgba(17, 24, 39, 0.7);
+  --panel-border: rgba(255, 255, 255, 0.08);
+  --accent-color: #3b82f6; /* Cyber blue */
+  --accent-neon: #60a5fa;
+  --accent-green: #10b981; /* Neon green */
+  --accent-red: #ef4444; /* Neon red */
+  --text-primary: #f3f4f6;
+  --text-secondary: #9ca3af;
+  --font-hud: 'Rajdhani', sans-serif;
+  --font-body: 'Outfit', sans-serif;
+  --shadow-neon: 0 0 15px rgba(59, 130, 246, 0.5);
+  --shadow-green: 0 0 15px rgba(16, 185, 129, 0.5);
+  --shadow-red: 0 0 15px rgba(239, 68, 68, 0.5);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-color);
+  font-family: var(--font-body);
+  color: var(--text-primary);
+}
+
+/* Main Container */
+#game-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#game-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+/* Glassmorphism Common Styles */
+.glass {
+  background: var(--panel-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  border-radius: 16px;
+}
+
+/* HUD System */
+#hud {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  z-index: 10;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.hud-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.stat-box {
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-border);
+  padding: 10px 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  min-width: 130px;
+}
+
+.stat-label {
+  font-family: var(--font-hud);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  color: var(--text-secondary);
+}
+
+.stat-value {
+  font-family: var(--font-hud);
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  text-shadow: var(--shadow-neon);
+}
+
+#fuel-container {
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-border);
+  padding: 10px 20px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  width: 250px;
+}
+
+.fuel-bar-outer {
+  width: 100%;
+  height: 12px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+  overflow: hidden;
+  margin-top: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+#fuel-bar-inner {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, var(--accent-red), var(--accent-green));
+  box-shadow: var(--shadow-green);
+  transition: width 0.1s linear, background-color 0.3s ease;
+  border-radius: 6px;
+}
+
+.fuel-low {
+  background: var(--accent-red) !important;
+  box-shadow: var(--shadow-red) !important;
+  animation: pulse 1s infinite alternate;
+}
+
+/* Speedometer */
+.hud-speedometer {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+}
+
+.speed-dial {
+  background: radial-gradient(circle, rgba(17, 24, 39, 0.9) 0%, rgba(11, 15, 25, 0.6) 100%);
+  border: 2px solid var(--accent-color);
+  box-shadow: var(--shadow-neon);
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.speed-value {
+  font-family: var(--font-hud);
+  font-size: 2rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.speed-unit {
+  font-family: var(--font-hud);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+/* Action button (mute) */
+.hud-actions {
+  position: absolute;
+  top: 100px;
+  right: 20px;
+  pointer-events: auto;
+}
+
+.icon-btn {
+  background: var(--panel-bg);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid var(--panel-border);
+  color: var(--text-primary);
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.icon-btn:hover {
+  background: var(--accent-color);
+  box-shadow: var(--shadow-neon);
+  transform: scale(1.05);
+}
+
+/* Overlay Panels (Menu and Game Over) */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 100;
+  background: rgba(11, 15, 25, 0.7);
+  padding: 20px;
+}
+
+.menu-card {
+  width: 100%;
+  max-width: 500px;
+  padding: 40px;
+  text-align: center;
+  animation: scaleUp 0.3s ease-out;
+}
+
+.game-title {
+  font-family: var(--font-hud);
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #ffffff 30%, var(--accent-neon) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  margin-bottom: 5px;
+  filter: drop-shadow(0 0 10px rgba(96, 165, 250, 0.3));
+}
+
+.danger-title {
+  font-family: var(--font-hud);
+  font-size: 3.2rem;
+  font-weight: 800;
+  color: #f87171;
+  text-shadow: var(--shadow-red);
+  margin-bottom: 5px;
+}
+
+.game-subtitle {
+  color: var(--text-secondary);
+  font-size: 1rem;
+  margin-bottom: 30px;
+}
+
+.controls-guide {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 30px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.controls-guide h3 {
+  font-family: var(--font-hud);
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-neon);
+  margin-bottom: 15px;
+}
+
+.guide-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.guide-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.key {
+  background: rgba(255, 255, 255, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-bottom: 3px solid rgba(255, 255, 255, 0.3);
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-family: monospace;
+  font-weight: bold;
+  color: #fff;
+  margin: 0 3px;
+}
+
+.action {
+  color: var(--text-secondary);
+  font-weight: 600;
+}
+
+.btn {
+  width: 100%;
+  padding: 16px 32px;
+  font-family: var(--font-hud);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.primary-btn {
+  background: linear-gradient(135deg, var(--accent-color) 0%, #1e40af 100%);
+  color: #fff;
+  box-shadow: var(--shadow-neon);
+}
+
+.primary-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 25px rgba(59, 130, 246, 0.8);
+}
+
+.primary-btn:active {
+  transform: translateY(1px);
+}
+
+.stats-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.summary-box {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 15px;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+}
+
+.highlight {
+  color: var(--accent-neon) !important;
+}
+
+/* Mobile Controls Overlay */
+#mobile-controls {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 25px;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.touch-btn {
+  pointer-events: auto;
+  border: none;
+  background: rgba(17, 24, 39, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+.brake-pedal {
+  border-color: rgba(239, 68, 68, 0.3);
+}
+
+.gas-pedal {
+  border-color: rgba(16, 185, 129, 0.3);
+}
+
+.brake-pedal:active {
+  background: rgba(239, 68, 68, 0.2);
+  border-color: var(--accent-red);
+  box-shadow: var(--shadow-red);
+  transform: scale(0.92);
+}
+
+.gas-pedal:active {
+  background: rgba(16, 185, 129, 0.2);
+  border-color: var(--accent-green);
+  box-shadow: var(--shadow-green);
+  transform: scale(0.92);
+}
+
+.pedal-face {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: #fff;
+}
+
+.pedal-face span:first-child {
+  font-family: var(--font-hud);
+  font-size: 1.4rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.pedal-face .sub-label {
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Utilities */
+.hidden {
+  display: none !important;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleUp {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+@keyframes pulse {
+  from { opacity: 1; }
+  to { opacity: 0.5; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .game-title {
+    font-size: 2.5rem;
+  }
+  .danger-title {
+    font-size: 2.2rem;
+  }
+  .hud-top {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  #fuel-container {
+    width: 100%;
+    order: 3;
+  }
+  .stat-box {
+    flex: 1;
+    min-width: 0;
+  }
+  .hud-speedometer {
+    top: auto;
+    bottom: 25px;
+  }
+  .hud-actions {
+    top: 75px;
+  }
+  .touch-btn {
+    width: 110px;
+    height: 110px;
+  }
+  .pedal-face span:first-child {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-height: 450px) {
+  #hud {
+    padding: 10px;
+  }
+  .stat-box {
+    padding: 5px 12px;
+  }
+  .stat-value {
+    font-size: 1.3rem;
+  }
+  #fuel-container {
+    width: 180px;
+    order: unset;
+    padding: 5px 12px;
+  }
+  .hud-speedometer {
+    display: none; /* Hide speedometer in tight landscape height */
+  }
+  .touch-btn {
+    width: 80px;
+    height: 80px;
+  }
+  .pedal-face span:first-child {
+    font-size: 0.9rem;
+  }
+  .pedal-face .sub-label {
+    display: none;
+  }
+  .menu-card {
+    padding: 20px;
+  }
+  .game-subtitle {
+    margin-bottom: 10px;
+  }
+  .controls-guide {
+    padding: 10px;
+    margin-bottom: 10px;
+  }
+  .btn {
+    padding: 10px 20px;
+  }
+}
